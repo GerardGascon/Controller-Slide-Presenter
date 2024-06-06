@@ -10,7 +10,7 @@ using wtf.cluster.JoyCon.Rumble;
 namespace SwitchSlidePresenter {
 	class Program {
 		static async Task Main(string[] args) {
-			await Tutorial.Execute();
+			await JoyConRead.Read();
 		}
 	}
 }
