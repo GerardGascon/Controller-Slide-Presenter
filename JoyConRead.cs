@@ -20,6 +20,8 @@ public class JoyConRead : GamepadReader {
 		HidDevice? device = GetHidDevice();
 		if (device == null) {
 			Console.WriteLine("No controller. Please connect Joy-Con or Pro controller via Bluetooth.");
+			Console.WriteLine("Press any key to exit program.");
+			Console.ReadKey();
 			return;
 		}
 		JoyCon joycon = new(device);
