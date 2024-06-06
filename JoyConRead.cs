@@ -10,12 +10,58 @@ using wtf.cluster.JoyCon.Rumble;
 
 namespace SwitchSlidePresenter;
 
-public class JoyConRead {
-	public static async Task Read() {
+public class JoyConRead : GamepadReader {
+	public override event Action NextSlide;
+	public override event Action PrevSlide;
+
+	public override async Task Read() {
 		Console.OutputEncoding = Encoding.UTF8;
 
-		HidDevice? device = null;
+		HidDevice? device = GetHidDevice();
+		if (device == null) {
+			Console.WriteLine("No controller. Please connect Joy-Con or Pro controller via Bluetooth.");
+			return;
+		}
+		JoyCon joycon = new(device);
+		joycon.Start();
+		await joycon.SetInputReportModeAsync(JoyCon.InputReportType.Simple);
+
+		await LogDeviceInfo(joycon);
+
+		joycon.ReportReceived += OnJoyConOnReportReceived;
+		Console.WriteLine($"JoyCon ready for presenting.");
+
+		joycon.StoppedOnError += (_, ex) => {
+			Console.WriteLine();
+			Console.WriteLine($"Critical error: {ex.Message}");
+			Console.WriteLine("Controller polling stopped.");
+			Environment.Exit(1);
+			return Task.CompletedTask;
+		};
+
+		Console.ReadKey();
+		joycon.Stop();
+
+		Console.WriteLine();
+		Console.WriteLine("Stopped.");
+	}
+
+	private static async Task LogDeviceInfo(JoyCon joycon) {
+		DeviceInfo deviceInfo = await joycon.GetDeviceInfoAsync();
+		Console.WriteLine(
+			$"Type: {deviceInfo.ControllerType}, Firmware: {deviceInfo.FirmwareVersionMajor}.{deviceInfo.FirmwareVersionMinor}");
+		string? serial = await joycon.GetSerialNumberAsync();
+		Console.WriteLine($"Serial number: {serial ?? "<none>"}");
+		ControllerColors? colors = await joycon.GetColorsAsync();
+		Console.WriteLine(colors != null
+			? $"Body color: {colors.BodyColor}, buttons color: {colors.ButtonsColor}"
+			: "Colors not specified, seems like the controller is grey.");
+	}
+
+	private static HidDevice? GetHidDevice() {
 		DeviceList list = DeviceList.Local;
+		HidDevice? device = null;
+
 		if (OperatingSystem.IsWindows()) {
 			var nintendos = list.GetHidDevices(0x057e);
 			device = nintendos.FirstOrDefault();
@@ -44,54 +90,21 @@ public class JoyConRead {
 				}
 			}
 		}
-		if (device == null) {
-			Console.WriteLine("No controller. Please connect Joy-Con or Pro controller via Bluetooth.");
-			return;
-		}
-		JoyCon joycon = new(device);
-		joycon.Start();
-		await joycon.SetInputReportModeAsync(JoyCon.InputReportType.Simple);
-
-		DeviceInfo deviceInfo = await joycon.GetDeviceInfoAsync();
-		Console.WriteLine(
-			$"Type: {deviceInfo.ControllerType}, Firmware: {deviceInfo.FirmwareVersionMajor}.{deviceInfo.FirmwareVersionMinor}");
-		var serial = await joycon.GetSerialNumberAsync();
-		Console.WriteLine($"Serial number: {serial ?? "<none>"}");
-		ControllerColors? colors = await joycon.GetColorsAsync();
-		if (colors != null) {
-			Console.WriteLine($"Body color: {colors.BodyColor}, buttons color: {colors.ButtonsColor}");
-		} else {
-			Console.WriteLine("Colors not specified, seems like the controller is grey.");
-		}
-
-		joycon.ReportReceived += OnJoyconOnReportReceived;
-
-		joycon.StoppedOnError += (_, ex) => {
-			Console.WriteLine();
-			Console.WriteLine($"Critical error: {ex.Message}");
-			Console.WriteLine("Controller polling stopped.");
-			Environment.Exit(1);
-			return Task.CompletedTask;
-		};
-
-		Console.ReadKey();
-		joycon.Stop();
-
-		Console.WriteLine();
-		Console.WriteLine("Stopped.");
+		return device;
 	}
 
-	private static Task OnJoyconOnReportReceived(JoyCon _, IJoyConReport input) {
-		if (input is InputSimple j) {
-			bool prev = PreviousPressed(j.Buttons);
-			bool next = NextPressed(j.Buttons);
-			if(prev)
-				Console.WriteLine("Previous Slide");
-			if(next)
-				Console.WriteLine("Next Slide");
-		} else {
+	private Task OnJoyConOnReportReceived(JoyCon _, IJoyConReport input) {
+		if (input is not InputSimple j) {
 			Console.WriteLine($"Invalid input report type: {input.GetType()}");
+			return Task.CompletedTask;
 		}
+
+		bool prev = PreviousPressed(j.Buttons);
+		bool next = NextPressed(j.Buttons);
+		if (prev)
+			PrevSlide?.Invoke();
+		if (next)
+			NextSlide?.Invoke();
 		return Task.CompletedTask;
 	}
 
