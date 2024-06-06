@@ -10,11 +10,11 @@ using wtf.cluster.JoyCon.Rumble;
 
 namespace SwitchSlidePresenter;
 
-public class JoyConRead : GamepadReader {
-	public override event Action NextSlide;
-	public override event Action PrevSlide;
+public class JoyConRead : IGamepadReader {
+	public event Action NextSlide;
+	public event Action PrevSlide;
 
-	public override async Task Read() {
+	public async Task Read() {
 		Console.OutputEncoding = Encoding.UTF8;
 
 		HidDevice? device = GetHidDevice();

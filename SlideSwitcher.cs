@@ -1,9 +1,9 @@
 ﻿namespace SwitchSlidePresenter;
 
 public class SlideSwitcher : IDisposable {
-	private readonly GamepadReader _reader;
+	private readonly IGamepadReader _reader;
 
-	public SlideSwitcher(GamepadReader reader) {
+	public SlideSwitcher(IGamepadReader reader) {
 		_reader = reader;
 		_reader.NextSlide += NextSlide;
 		_reader.PrevSlide += PreviousSlide;
