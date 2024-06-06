@@ -29,7 +29,6 @@ public class JoyConRead : GamepadReader {
 		await LogDeviceInfo(joycon);
 
 		joycon.ReportReceived += OnJoyConOnReportReceived;
-		Console.WriteLine($"JoyCon ready for presenting.");
 
 		joycon.StoppedOnError += (_, ex) => {
 			Console.WriteLine();
@@ -39,7 +38,9 @@ public class JoyConRead : GamepadReader {
 			return Task.CompletedTask;
 		};
 
-		Console.ReadKey();
+		Console.WriteLine("JoyCon ready for presenting.");
+		Console.WriteLine("Press Enter to exit program.");
+		while (Console.ReadKey().Key != ConsoleKey.Enter) { }
 		joycon.Stop();
 
 		Console.WriteLine();
