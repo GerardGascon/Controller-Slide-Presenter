@@ -1,12 +1,9 @@
 ﻿using System.Text;
 using HidSharp;
 using wtf.cluster.JoyCon;
-using wtf.cluster.JoyCon.Calibration;
 using wtf.cluster.JoyCon.ExtraData;
-using wtf.cluster.JoyCon.HomeLed;
 using wtf.cluster.JoyCon.InputData;
 using wtf.cluster.JoyCon.InputReports;
-using wtf.cluster.JoyCon.Rumble;
 
 namespace SwitchSlidePresenter;
 
