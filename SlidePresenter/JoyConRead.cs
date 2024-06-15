@@ -60,37 +60,9 @@ public class JoyConRead : IGamepadReader {
 
 	private static HidDevice? GetHidDevice() {
 		DeviceList list = DeviceList.Local;
-		HidDevice? device = null;
+		IEnumerable<HidDevice>? nintendos = list.GetHidDevices(0x057e);
 
-		if (OperatingSystem.IsWindows()) {
-			var nintendos = list.GetHidDevices(0x057e);
-			device = nintendos.FirstOrDefault();
-		} else {
-			var hidDevices = list.GetHidDevices();
-			foreach (var d in hidDevices) {
-				var rd = d.GetReportDescriptor();
-				if (rd != null) {
-					if (
-						rd.OutputReports.Count() == 4
-						&& rd.OutputReports.Count(r => r.ReportID == 0x01) == 1
-						&& rd.OutputReports.Count(r => r.ReportID == 0x10) == 1
-						&& rd.OutputReports.Count(r => r.ReportID == 0x11) == 1
-						&& rd.OutputReports.Count(r => r.ReportID == 0x12) == 1
-						&& rd.InputReports.Count() == 6
-						&& rd.InputReports.Count(r => r.ReportID == 0x21) == 1
-						&& rd.InputReports.Count(r => r.ReportID == 0x30) == 1
-						&& rd.InputReports.Count(r => r.ReportID == 0x31) == 1
-						&& rd.InputReports.Count(r => r.ReportID == 0x32) == 1
-						&& rd.InputReports.Count(r => r.ReportID == 0x33) == 1
-						&& rd.InputReports.Count(r => r.ReportID == 0x3F) == 1
-					) {
-						device = d;
-						break;
-					}
-				}
-			}
-		}
-		return device;
+		return nintendos.FirstOrDefault();
 	}
 
 	private Task OnJoyConOnReportReceived(JoyCon _, IJoyConReport input) {
