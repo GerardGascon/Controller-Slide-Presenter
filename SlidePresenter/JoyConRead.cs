@@ -16,7 +16,7 @@ public class JoyConRead : IGamepadReader {
 
 		HidDevice? device = GetHidDevice();
 		if (device == null) {
-			Console.WriteLine("No controller. Please connect Joy-Con or Pro controller via Bluetooth.");
+			Console.WriteLine("No controller. Please connect Joy-Con via Bluetooth.");
 			Console.WriteLine("Press any key to exit program.");
 			Console.ReadKey();
 			return;
@@ -39,11 +39,14 @@ public class JoyConRead : IGamepadReader {
 
 		Console.WriteLine("JoyCon ready for presenting.");
 		Console.WriteLine("Press Enter to exit program.");
-		while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+		while (Console.ReadKey().Key != ConsoleKey.Enter) {
+			await Task.Yield();
+		}
 		joycon.Stop();
 
 		Console.WriteLine();
 		Console.WriteLine("Stopped.");
+		await Task.CompletedTask;
 	}
 
 	private static async Task LogDeviceInfo(JoyCon joycon) {

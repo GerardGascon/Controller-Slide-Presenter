@@ -6,39 +6,37 @@ public class WiimoteRead : IGamepadReader {
 	public event Action NextSlide;
 	public event Action PrevSlide;
 
-	private const int RetryDelay = 1000;
-
 	public async Task Read() {
 		Wiimote wiimote = new();
-		while (string.IsNullOrEmpty(wiimote.HIDDevicePath)) {
-			wiimote.Connect();
-			if (string.IsNullOrEmpty(wiimote.HIDDevicePath)) {
-				Console.WriteLine("Wiimote connection failed, trying again...");
-				await Task.Delay(RetryDelay);
-			} else {
-				Console.WriteLine("Wiimote ready for presenting!");
-			}
+		wiimote.Connect();
+
+		if (string.IsNullOrEmpty(wiimote.HIDDevicePath)) {
+			Console.WriteLine("No controller. Please connect Wiimote via Bluetooth.");
+			Console.WriteLine("Press any key to exit program.");
+			Console.ReadKey();
+			return;
 		}
 
-		ButtonState previousState = wiimote.WiimoteState.ButtonState;
-		while (true) {
-			if (PreviousPressed(wiimote.WiimoteState.ButtonState, previousState)) {
-				PrevSlide?.Invoke();
-			}
-			if (NextPressed(wiimote.WiimoteState.ButtonState, previousState)) {
-				NextSlide?.Invoke();
-			}
-			previousState = wiimote.WiimoteState.ButtonState;
+		wiimote.WiimoteChanged += WiimoteChanged;
 
+		Console.WriteLine("Wiimote ready for presenting.");
+		Console.WriteLine("Press Enter to exit program.");
+		while (Console.ReadKey().Key != ConsoleKey.Enter) {
 			await Task.Yield();
+		}
+		wiimote.Disconnect();
 
-			if (!Console.KeyAvailable || Console.ReadKey().Key != ConsoleKey.Enter)
-				continue;
-			wiimote.Disconnect();
+		Console.WriteLine();
+		Console.WriteLine("Stopped.");
+		await Task.CompletedTask;
+	}
 
-			Console.WriteLine();
-			Console.WriteLine("Stopped.");
-			break;
+	private void WiimoteChanged(object? sender, WiimoteChangedEventArgs e) {
+		if (PreviousPressed(e.WiimoteState.ButtonState)) {
+			PrevSlide?.Invoke();
+		}
+		if (NextPressed(e.WiimoteState.ButtonState)) {
+			NextSlide?.Invoke();
 		}
 	}
 
@@ -47,12 +45,5 @@ public class WiimoteRead : IGamepadReader {
 	}
 	private static bool NextPressed(ButtonState input) {
 		return input.A || input.Right;
-	}
-
-	private static bool PreviousPressed(ButtonState input, ButtonState previousState) {
-		return PreviousPressed(input) && !PreviousPressed(previousState);
-	}
-	private static bool NextPressed(ButtonState input, ButtonState previousState) {
-		return NextPressed(input) && !NextPressed(previousState);
 	}
 }
