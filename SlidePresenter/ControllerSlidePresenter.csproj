@@ -8,13 +8,23 @@
         <RootNamespace>SwitchSlidePresenter</RootNamespace>
     </PropertyGroup>
 
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <DefineConstants>OS_WINDOWS</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <DefineConstants>OS_LINUX</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+        <DefineConstants>OS_MAC</DefineConstants>
+    </PropertyGroup>
+    
     <ItemGroup>
       <PackageReference Include="JoyCon.NET" Version="1.0.1" />
       <PackageReference Include="WiimoteLib.NetCore" Version="1.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Win32Api\Win32Api.csproj" />
+      <ProjectReference Include="..\Win32Api\Win32Api.csproj" Condition="$([MSBuild]::IsOSPlatform('Windows'))"/>
     </ItemGroup>
 
 </Project>

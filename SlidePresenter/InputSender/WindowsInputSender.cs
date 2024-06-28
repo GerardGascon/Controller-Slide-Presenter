@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿#if OS_WINDOWS
+using System.Runtime.InteropServices;
 using Win32Api;
 
 namespace SwitchSlidePresenter.InputSender;
@@ -45,3 +46,4 @@ public class WindowsInputSender : IInputSender {
 		Win32Api.Win32Api.SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
 	}
 }
+#endif
