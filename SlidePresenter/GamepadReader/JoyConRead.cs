@@ -1,6 +1,7 @@
 ﻿#if JoyCon
 using System.Text;
 using HidSharp;
+using HidSharp.Reports;
 using wtf.cluster.JoyCon;
 using wtf.cluster.JoyCon.ExtraData;
 using wtf.cluster.JoyCon.InputData;
@@ -63,10 +64,44 @@ public class JoyConRead : IGamepadReader {
 	}
 
 	private static HidDevice? GetHidDevice() {
+		return OperatingSystem.IsWindows()
+			? GetWindowsHidDevice()
+			: GetNonWindowsHidDevice();
+	}
+
+	private static HidDevice? GetWindowsHidDevice() {
 		DeviceList list = DeviceList.Local;
 		IEnumerable<HidDevice>? nintendos = list.GetHidDevices(0x057e);
+		HidDevice? device = nintendos.FirstOrDefault();
+		return device;
+	}
 
-		return nintendos.FirstOrDefault();
+	private static HidDevice? GetNonWindowsHidDevice() {
+		HidDevice? device = null;
+		DeviceList list = DeviceList.Local;
+
+		IEnumerable<HidDevice>? hidDevices = list.GetHidDevices();
+		foreach (HidDevice d in hidDevices)
+		{
+			ReportDescriptor? rd = d.GetReportDescriptor();
+			if (rd == null) continue;
+			if (rd.OutputReports.Count() != 4
+			    || rd.OutputReports.Count(r => r.ReportID == 0x01) != 1
+			    || rd.OutputReports.Count(r => r.ReportID == 0x10) != 1
+			    || rd.OutputReports.Count(r => r.ReportID == 0x11) != 1
+			    || rd.OutputReports.Count(r => r.ReportID == 0x12) != 1
+			    || rd.InputReports.Count() != 6
+			    || rd.InputReports.Count(r => r.ReportID == 0x21) != 1
+			    || rd.InputReports.Count(r => r.ReportID == 0x30) != 1
+			    || rd.InputReports.Count(r => r.ReportID == 0x31) != 1
+			    || rd.InputReports.Count(r => r.ReportID == 0x32) != 1
+			    || rd.InputReports.Count(r => r.ReportID == 0x33) != 1
+			    || rd.InputReports.Count(r => r.ReportID == 0x3F) != 1) continue;
+
+			device = d;
+			break;
+		}
+		return device;
 	}
 
 	private Task OnJoyConOnReportReceived(JoyCon _, IJoyConReport input) {
