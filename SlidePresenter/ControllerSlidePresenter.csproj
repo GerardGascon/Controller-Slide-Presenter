@@ -5,22 +5,26 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>SwitchSlidePresenter</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-        <DefineConstants>OS_WINDOWS</DefineConstants>
+        <DefineConstants>$(DefineConstants);OS_WINDOWS</DefineConstants>
     </PropertyGroup>
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
-        <DefineConstants>OS_LINUX</DefineConstants>
+        <DefineConstants>$(DefineConstants);OS_LINUX</DefineConstants>
     </PropertyGroup>
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-        <DefineConstants>OS_MAC</DefineConstants>
+        <DefineConstants>$(DefineConstants);OS_MAC</DefineConstants>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <DefineConstants>$(DefineConstants);JoyCon</DefineConstants>
+        <DefineConstants>$(DefineConstants);Wiimote</DefineConstants>
     </PropertyGroup>
     
     <ItemGroup>
-      <PackageReference Include="JoyCon.NET" Version="1.0.1" />
-      <PackageReference Include="WiimoteLib.NetCore" Version="1.0.0" />
+      <PackageReference Include="JoyCon.NET" Version="1.0.1" Condition="$(DefineConstants.Contains(JoyCon))" />
+      <PackageReference Include="WiimoteLib.NetCore" Version="1.0.0" Condition="$(DefineConstants.Contains(Wiimote))" />
     </ItemGroup>
 
     <ItemGroup>

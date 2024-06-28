@@ -1,4 +1,4 @@
-﻿namespace SwitchSlidePresenter.InputSender;
+﻿namespace ControllerSlidePresenter.InputSender;
 
 public interface IInputSender {
 	void NextSlide();

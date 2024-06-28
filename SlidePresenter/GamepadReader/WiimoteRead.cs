@@ -1,6 +1,7 @@
-﻿using WiimoteLib.NetCore;
+﻿#if Wiimote
+using WiimoteLib.NetCore;
 
-namespace SwitchSlidePresenter;
+namespace ControllerSlidePresenter.GamepadReader;
 
 public class WiimoteRead : IGamepadReader {
 	public event Action NextSlide;
@@ -47,3 +48,4 @@ public class WiimoteRead : IGamepadReader {
 		return input.A || input.Right;
 	}
 }
+#endif

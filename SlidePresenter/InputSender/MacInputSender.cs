@@ -1,5 +1,5 @@
 ﻿#if OS_MAC
-namespace SwitchSlidePresenter.InputSender;
+namespace ControllerSlidePresenter.InputSender;
 
 public class MacInputSender : IInputSender {
 	public void NextSlide() {

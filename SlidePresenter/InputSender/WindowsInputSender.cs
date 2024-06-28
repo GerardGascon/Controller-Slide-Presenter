@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using Win32Api;
 
-namespace SwitchSlidePresenter.InputSender;
+namespace ControllerSlidePresenter.InputSender;
 
 public class WindowsInputSender : IInputSender {
 	private const uint INPUT_KEYBOARD = 1;

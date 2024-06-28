@@ -1,11 +1,12 @@
-﻿using System.Text;
+﻿#if JoyCon
+using System.Text;
 using HidSharp;
 using wtf.cluster.JoyCon;
 using wtf.cluster.JoyCon.ExtraData;
 using wtf.cluster.JoyCon.InputData;
 using wtf.cluster.JoyCon.InputReports;
 
-namespace SwitchSlidePresenter;
+namespace ControllerSlidePresenter.GamepadReader;
 
 public class JoyConRead : IGamepadReader {
 	public event Action NextSlide;
@@ -90,3 +91,4 @@ public class JoyConRead : IGamepadReader {
 		return input.ZLorZR || input.Down;
 	}
 }
+#endif

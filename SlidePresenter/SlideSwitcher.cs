@@ -1,6 +1,7 @@
-﻿using SwitchSlidePresenter.InputSender;
+﻿using ControllerSlidePresenter.GamepadReader;
+using ControllerSlidePresenter.InputSender;
 
-namespace SwitchSlidePresenter;
+namespace ControllerSlidePresenter;
 
 public class SlideSwitcher : IDisposable {
 	private readonly IGamepadReader? _reader;

@@ -1,5 +1,5 @@
 ﻿#if OS_LINUX
-namespace SwitchSlidePresenter.InputSender;
+namespace ControllerSlidePresenter.InputSender;
 
 public class LinuxInputSender : IInputSender {
 	public void NextSlide() {

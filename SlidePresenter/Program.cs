@@ -1,4 +1,6 @@
-﻿namespace SwitchSlidePresenter {
+﻿using ControllerSlidePresenter.GamepadReader;
+
+namespace ControllerSlidePresenter {
 	internal abstract class Program {
 		private static async Task Main() {
 			IGamepadReader? reader = ControllerSelector.GetReader();
