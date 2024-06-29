@@ -28,11 +28,11 @@ jobs:
         run: dotnet restore
 
       - name: Build self-contained application
-        run: dotnet publish --no-restore --configuration Release --self-contained -r ${{ matrix.runtime }}
+        run: dotnet publish SlidePresenter/ControllerSlidePresenter.csproj --no-restore --configuration Release --self-contained -r ${{ matrix.runtime }}
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: self-contained-${{ matrix.runtime }}
+          name: build-${{ matrix.runtime }}
           path: |
             **/bin/Release/net8.0/${{ matrix.runtime }}/publish/
