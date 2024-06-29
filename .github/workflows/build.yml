@@ -31,7 +31,7 @@ jobs:
         run: dotnet restore
 
       - name: Build self-contained application
-        run: dotnet publish --no-restore --configuration Release --self-contained -r ${{ matrix.runtime }} /p:PublishSingleFile=false
+        run: dotnet publish --no-restore --configuration Release --self-contained -r ${{ matrix.runtime }}
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
