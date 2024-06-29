@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Publish Linux-x64" type="DotNetFolderPublish" factoryName="Publish to folder">
+    <riderPublish configuration="Release" platform="Any CPU" runtime="linux-x64" self_contained="true" target_folder="$PROJECT_DIR$/SlidePresenter/bin/Release/net8.0/linux-x64/publish" target_framework="net8.0" uuid_high="-467478054054508763" uuid_low="-8110965388391740835" />
+    <method v="2" />
+  </configuration>
+</component>
