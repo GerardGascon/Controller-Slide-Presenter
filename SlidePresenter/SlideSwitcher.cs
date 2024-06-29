@@ -16,11 +16,14 @@ public class SlideSwitcher : IDisposable {
 
 	public SlideSwitcher(IGamepadReader? reader) {
 		_reader = reader;
+		if (_reader == null) return;
+
 		_reader.NextSlide += NextSlide;
 		_reader.PrevSlide += PreviousSlide;
 	}
 
 	public void Dispose() {
+		if (_reader == null) return;
 		_reader.NextSlide -= NextSlide;
 		_reader.PrevSlide -= PreviousSlide;
 	}

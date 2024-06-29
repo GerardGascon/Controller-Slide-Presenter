@@ -10,8 +10,8 @@ using wtf.cluster.JoyCon.InputReports;
 namespace ControllerSlidePresenter.GamepadReader;
 
 public class JoyConRead : IGamepadReader {
-	public event Action NextSlide;
-	public event Action PrevSlide;
+	public event Action? NextSlide;
+	public event Action? PrevSlide;
 
 	public async Task Read() {
 		Console.OutputEncoding = Encoding.UTF8;

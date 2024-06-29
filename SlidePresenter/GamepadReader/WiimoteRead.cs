@@ -4,8 +4,8 @@ using WiimoteLib.NetCore;
 namespace ControllerSlidePresenter.GamepadReader;
 
 public class WiimoteRead : IGamepadReader {
-	public event Action NextSlide;
-	public event Action PrevSlide;
+	public event Action? NextSlide;
+	public event Action? PrevSlide;
 
 	public async Task Read() {
 		Wiimote wiimote = new();
