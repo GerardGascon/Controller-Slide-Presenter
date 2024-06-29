@@ -9,11 +9,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest]
+        os: [windows-latest, ubuntu-latest]
         include:
           - os: windows-latest
             vs-version: 'latest'
             runtime: 'win-x64'
+          - os: ubuntu-latest
+            vs-version: 'latest'
+            runtime: 'linux-x64'
 
     steps:
       - name: Checkout code
@@ -28,7 +31,7 @@ jobs:
         run: dotnet restore
 
       - name: Build self-contained application
-        run: dotnet publish SlidePresenter/ControllerSlidePresenter.csproj --no-restore --configuration Release --self-contained -r ${{ matrix.runtime }}
+        run: dotnet publish SlidePresenter/ControllerSlidePresenter.csproj --no-restore --configuration Release --self-contained -r ${{ matrix.runtime }} /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
